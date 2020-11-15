@@ -54,15 +54,7 @@ $HtmlCharts = "$ScriptPath\htmlCharts"
 
     $TemperatureValues = $TemperatureValues.Substring(0,$TemperatureValues.Length-1)
     $MeasuredDateTimeValues = $MeasuredDateTimeValues.Substring(0,$MeasuredDateTimeValues.Length-1)
-    $OutputLabel.Content = $MeasuredDateTimeValues
 
-    # Write-Output $GetTemperature
-    # $Label1.Content = "$((Get-WmiObject Win32_PhysicalMemory -ComputerName $ComputerName.Text | Select-Object -ExpandProperty Capacity | Measure-Object -Sum).Sum / 1GB)" + " GB"
-    # $Label2.Content = $(Get-WmiObject Win32_Processor -ComputerName $ComputerName.Text).NumberOfLogicalProcessors
-    # $Label3.Content = "$([System.Math]::Round((get-wmiobject Win32_DiskDrive -ComputerName $ComputerName.Text).size / 1gb))" + " GB"
-    # $Label4.Content = (Get-WmiObject win32_NetworkAdapter -ComputerName $ComputerName.Text | Where-Object {$_.PhysicalAdapter}).Count
-
-    $AllProcesses = Get-Process -ComputerName $ComputerName.Text
     $ProcessByCpu = $AllProcesses | Group-object -Property Name
     $Top5ProcessesByCPU = $ProcessByCpu | Select-Object Name, @{N='CpuUsage';E={$_.Group.cpu | Measure-Object -Sum | Select-Object -ExpandProperty Sum}} | Sort-Object -Property CpuUsage -Descending | Select-Object -First 10
     $TopCpuNames = ($Top5ProcessesByCPU.Name | ForEach-Object {"'{0}'" -f $_}) -join ', '
@@ -72,19 +64,6 @@ $HtmlCharts = "$ScriptPath\htmlCharts"
 
     $Form.Height="850" 
     $Form.Width="1200"
-
-    $ProcessByCount = $AllProcesses| Group-Object -Property Name | Sort-Object -Property Count -Descending | Select-Object -First 5
-    $Top5ProcName = ($ProcessByCount.Name | ForEach-Object {"'{0}'" -f $_}) -join ', '
-    $Top5ProcCount = ($ProcessByCount | Select-Object -ExpandProperty Count) -join ', '
-    & "$ScriptPath\Psscripts\New-BarChart.ps1" -Top5ProcName $Top5ProcName -Top5ProcCount $Top5ProcCount -LegendLabel Count
-    $WebBrowser2.Navigate("file:///$HtmlCharts\Bar.html")
-
-    $AllServices = Get-Service -ComputerName $ComputerName.Text
-    $ServicesByCount = $AllServices | Group-Object -Property Status
-    $ServicesNames = ($ServicesByCount.Name | ForEach-Object {"'{0}'" -f $_}) -join ', '
-    $ServicesStatusCount = ($ServicesByCount | Select-Object -ExpandProperty Count) -join ', '
-    & "$ScriptPath\Psscripts\New-DoughnutChart.ps1" -ServicesNames $ServicesNames -ServicesCount $ServicesStatusCount -LegendLabel Status
-    $WebBrowser1.Navigate("file:///$HtmlCharts\Doughnut.html")
 
 #Mandetory last line of every script to load form
 [void]$Form.ShowDialog() 
