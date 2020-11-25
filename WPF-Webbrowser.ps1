@@ -47,7 +47,7 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]")  | For
     $TemperatureValues = ""
     $MeasuredDateTimeValues = ""
 
-    # loop trough the temperature and save them in a string to be able to display them on the chart
+    # Loop through the temperature and save them in a string to be able to display them on the chart
     foreach($row in $GetTemperature)
     {
         $TemperatureValues += "$($row.Temperature)," 
@@ -67,5 +67,5 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]")  | For
     $Form.Height="850" 
     $Form.Width="1200"
 
-# Mandetory last line of every script to load form
+# Mandatory last line of every script to load form
 [void]$Form.ShowDialog() 
